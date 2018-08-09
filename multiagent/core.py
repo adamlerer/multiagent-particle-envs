@@ -97,6 +97,8 @@ class World(object):
         # contact response parameters
         self.contact_force = 1e+2
         self.contact_margin = 1e-3
+        self.cam_range = 1
+        self.wraparound = False
 
     # return all entities in the world
     @property
@@ -167,6 +169,12 @@ class World(object):
                     entity.state.p_vel = entity.state.p_vel / np.sqrt(np.square(entity.state.p_vel[0]) +
                                                                   np.square(entity.state.p_vel[1])) * entity.max_speed
             entity.state.p_pos += entity.state.p_vel * self.dt
+            if self.wraparound:
+                for dim in range(2):
+                    if entity.state.p_pos[dim] > self.cam_range:
+                        entity.state.p_pos[dim] -= 2 * self.cam_range
+                    if entity.state.p_pos[dim] < -self.cam_range:
+                        entity.state.p_pos[dim] += 2 * self.cam_range
 
     def update_agent_state(self, agent):
         # set communication state (directly for now)
