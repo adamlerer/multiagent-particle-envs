@@ -243,6 +243,8 @@ class MultiAgentEnv(gym.Env):
                 viewer.geoms = []
                 for geom in self.render_geoms:
                     viewer.add_geom(geom)
+                if self.world.circle_boundary:
+                    viewer.add_geom(rendering.make_circle(self.world.cam_range, filled=False))
 
         results = []
         for i in range(len(self.viewers)):

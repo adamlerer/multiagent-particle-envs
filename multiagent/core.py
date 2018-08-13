@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import linalg as LA
 
 # physical/external base state of all entites
 class EntityState(object):
@@ -99,6 +100,7 @@ class World(object):
         self.contact_margin = 1e-3
         self.cam_range = 1
         self.wraparound = False
+        self.circle_boundary = False
 
     # return all entities in the world
     @property
@@ -175,6 +177,9 @@ class World(object):
                         entity.state.p_pos[dim] -= 2 * self.cam_range
                     if entity.state.p_pos[dim] < -self.cam_range:
                         entity.state.p_pos[dim] += 2 * self.cam_range
+            if self.circle_boundary:
+                if LA.norm(entity.state.p_pos) > self.cam_range:
+                    entity.state.p_pos *= self.cam_range / LA.norm(entity.state.p_pos)
 
     def update_agent_state(self, agent):
         # set communication state (directly for now)
